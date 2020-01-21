@@ -39,7 +39,7 @@ Extracts and cleans text from a Wikipedia database dump and stores output in a
 number of files of similar size in a given directory.
 Each file will contain several documents in the format:
 
-    <doc id="" revid="" url="" title="">
+    <doc id="" revid="" title="">
         ...
         </doc>
 
@@ -582,9 +582,9 @@ class Extractor(object):
             out.write('\n')
         else:
             if options.print_revision:
-                header = '<doc id="%s" revid="%s" url="%s" title="%s">\n' % (self.id, self.revid, url, self.title)
+                header = '<doc id="%s" revid="%s" title="%s">\n' % (self.id, self.revid, self.title)
             else:
-                header = '<doc id="%s" url="%s" title="%s">\n' % (self.id, url, self.title)
+                header = '<doc id="%s" title="%s">\n' % (self.id, self.title)
             footer = "\n</doc>\n"
             if out == sys.stdout:  # option -a or -o -
                 header = header.encode('utf-8')
@@ -723,12 +723,9 @@ class Extractor(object):
         # residuals of unbalanced quotes
         text = text.replace("'''", '').replace("''", '"')
 
-        # replace internal links
+        # replace links
         text = replaceInternalLinks(text)
-
-        # replace external links
         text = replaceExternalLinks(text)
-
         # drop MagicWords behavioral switches
         text = magicWordsRE.sub('', text)
 
@@ -2491,17 +2488,11 @@ def replaceExternalLinks(text):
 
 def makeExternalLink(url, anchor):
     """Function applied to wikiLinks"""
-    if options.keepLinks:
-        return '<a href="%s">%s</a>' % (quote(url.encode('utf-8')), anchor)
-    else:
-        return anchor
+    return ''
 
 
 def makeExternalImage(url, alt=''):
-    if options.keepLinks:
-        return '<img src="%s" alt="%s">' % (url, alt)
-    else:
-        return alt
+    return ''
 
 
 # ----------------------------------------------------------------------
